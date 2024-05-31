@@ -2,6 +2,10 @@
 const ref_a = [0, 0, 11.333333, 48.866667]
 const ref_b = [685, 684, 11.733333, 48.6]
 
+let curr_lat = 0.0;
+let curr_lon = 0.0;
+let curr_heading = 0.0;
+
 
 function preload() {
   // Load map as background (0, 0, 11.333333, 48.866667), (685, 684, 11.733333, 48.6)
@@ -23,6 +27,13 @@ function setup() {
   
   // Create canvas at the size of the map background
   createCanvas(map_background.width, map_background.height);
+  
+  // Setup websocket
+  const socket = new WebSocket('ws://localhost:8080');
+  // Listen for messages
+  socket.addEventListener('message', function (event) {
+    console.log('Message from server ', event.data);
+  });
 }
 
 
@@ -30,18 +41,20 @@ function draw() {
   // Draw the map as background
   image(map_background, 0, 0);
   
-  fill(255, 0, 0);
   coord = get_pixels_from_geo_coordinates(11.515383, 48.716667);
   draw_plane(coord[0], coord[1], 90);
 }
 
 
 function draw_plane(x, y, heading) {
+  push()
+  airplane_img.resize(50, 0);
   imageMode(CENTER);
-  rotate(heading)
-  image(airplane_img, x, y)
-  imageMode(CORNER);
-  rotate(-heading)
+  translate(x, y)
+  angleMode(DEGREES);
+  rotate(heading);
+  image(airplane_img, 0, 0)
+  pop()
 }
 
 
