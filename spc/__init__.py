@@ -81,6 +81,9 @@ class FlightController:
     def get_IAS(self) -> float:
         return self.xpc.getDREF("sim/flightmodel/position/indicated_airspeed")[0]
 
+    def get_altitude_ft_pilot(self) -> float:
+        return self.xpc.getDREF("sim/cockpit2/gauges/indicators/altitude_ft_pilot")[0]
+
     def set_aileron_trim(self, value: float) -> None:
         self.xpc.sendDREF("sim/flightmodel/controls/elv_trim", value)
 
