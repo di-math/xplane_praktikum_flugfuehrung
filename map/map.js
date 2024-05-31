@@ -20,7 +20,6 @@ function preload() {
 function setup() {
   // Check if ref_a is NW to ref_b
   if (ref_a[2] > ref_b[2] || ref_a[3] < ref_b[3]) {
-    // TODO: show error message in a better way
     console.log("Error, ref_a point is not NW to ref_a point!");
     return;
   }
@@ -59,8 +58,6 @@ function draw() {
   
   // Draw plane on map
   draw_plane(coord[0], coord[1], curr_heading);
-  
-  
   
 }
 
