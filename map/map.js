@@ -6,7 +6,6 @@ let curr_lat = 0.0;
 let curr_lon = 0.0;
 let curr_heading = 0.0;
 
-
 function preload() {
   // Load map as background (0, 0, 11.333333, 48.866667), (685, 684, 11.733333, 48.6)
   // etsi_vfr1 reference points: 
@@ -15,7 +14,6 @@ function preload() {
   // Load airplane image
   airplane_img = loadImage('assets/airplane.png');
 }
-
 
 function setup() {
   // Check if ref_a is NW to ref_b
@@ -29,11 +27,15 @@ function setup() {
   createCanvas(map_background.width, map_background.height);
   
   // Setup websocket
-  const socket = new WebSocket('ws://localhost:8080');
+  const socket = new WebSocket('ws://localhost:3000');
   // Listen for messages
-  socket.addEventListener('message', function (event) {
-    console.log('Message from server ', event.data);
-  });
+  socket.onmessage = (message) => {
+    pos_obj = JSON.parse(message.data);
+    curr_lat = pos_obj["lat"];
+    curr_lon = pos_obj["lon"];
+    curr_heading = pos_obj["heading"];
+  };
+  
 }
 
 
@@ -41,8 +43,9 @@ function draw() {
   // Draw the map as background
   image(map_background, 0, 0);
   
-  coord = get_pixels_from_geo_coordinates(11.515383, 48.716667);
-  draw_plane(coord[0], coord[1], 90);
+  // Draw plane on map
+  coord = get_pixels_from_geo_coordinates(curr_lat, curr_lon);
+  draw_plane(coord[0], coord[1], curr_heading);
 }
 
 
