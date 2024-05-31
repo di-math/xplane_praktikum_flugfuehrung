@@ -18,13 +18,13 @@ async def connection_callback(websocket):
         clients.remove(websocket)
 
 
-
 async def send_pos():
     with spc.FlightController() as fc:
         while True:
             if clients:
                 pos = fc.xpc.getPOSI()
-                await asyncio.gather(*[client.send(json.dumps({"lat": pos[1], "lon": pos[0], "heading": pos[5]})) for client in clients])
+                height = fc.get_altitude_ft_pilot()
+                await asyncio.gather(*[client.send(json.dumps({"lat": pos[1], "lon": pos[0], "heading": pos[5], "height": height})) for client in clients])
             await asyncio.sleep(1)
 
 
