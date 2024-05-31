@@ -6,6 +6,8 @@ let curr_lat = 0.0;
 let curr_lon = 0.0;
 let curr_heading = 0.0;
 
+let flight_path_history = [];
+
 function preload() {
   // Load map as background (0, 0, 11.333333, 48.866667), (685, 684, 11.733333, 48.6)
   // etsi_vfr1 reference points:
@@ -18,13 +20,13 @@ function preload() {
 function setup() {
   // Check if ref_a is NW to ref_b
   if (ref_a[2] > ref_b[2] || ref_a[3] < ref_b[3]) {
-    // TODO: show error message in a better way
     console.log("Error, ref_a point is not NW to ref_a point!");
     return;
   }
 
   // Create canvas at the size of the map background
   createCanvas(map_background.width, map_background.height);
+  frameRate(2);
 
   // Setup websocket
   const socket = new WebSocket("ws://localhost:3000");
@@ -41,9 +43,22 @@ function draw() {
   // Draw the map as background
   image(map_background, 0, 0);
 
-  // Draw plane on map
+  // Calculate current position in pixels
   coord = get_pixels_from_geo_coordinates(curr_lat, curr_lon);
+  
+  // Draw path
+  stroke(255, 0, 0);
+  flight_path_history.push(coord);
+  flight_path_history.forEach((elem) => {
+    circle(elem[0], elem[1], 2);
+  });
+  if(flight_path_history.length > 500) {
+   flight_path_history.pop() 
+  }
+  
+  // Draw plane on map
   draw_plane(coord[0], coord[1], curr_heading);
+  
 }
 
 function draw_plane(x, y, heading) {

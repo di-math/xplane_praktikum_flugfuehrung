@@ -9,8 +9,14 @@ clients = set()
 
 async def connection_callback(websocket):
     clients.add(websocket)
-    async for msg in websocket:
-        print(msg)
+    try:
+        async for msg in websocket:
+            print(msg)
+    except Exception as e:
+        print(e)
+    finally:
+        clients.remove(websocket)
+
 
 
 async def send_pos():
