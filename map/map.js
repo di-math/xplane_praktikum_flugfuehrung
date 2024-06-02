@@ -1,4 +1,5 @@
 // ref_a has to always be NW to ref_b
+// ref_a = [x, y, lat, lon]
 const ref_a = [0, 0, 11.333333, 48.866667];
 const ref_b = [685, 684, 11.733333, 48.6];
 
@@ -29,7 +30,7 @@ function setup() {
   frameRate(2);
 
   // Setup websocket
-  const socket = new WebSocket("ws://localhost:3000");
+  const socket = new WebSocket("ws://localhost:8080");
   // Listen for messages
   socket.onmessage = (message) => {
     pos_obj = JSON.parse(message.data);
@@ -44,21 +45,20 @@ function draw() {
   image(map_background, 0, 0);
 
   // Calculate current position in pixels
-  coord = get_pixels_from_geo_coordinates(curr_lat, curr_lon);
-  
+  coord = get_pixels_from_geo_coordinates(curr_lat, curr_lon, ref_a, ref_b);
+
   // Draw path
   stroke(255, 0, 0);
   flight_path_history.push(coord);
   flight_path_history.forEach((elem) => {
     circle(elem[0], elem[1], 2);
   });
-  if(flight_path_history.length > 500) {
-   flight_path_history.pop() 
+  if (flight_path_history.length > 500) {
+    flight_path_history.shift();
   }
-  
+
   // Draw plane on map
   draw_plane(coord[0], coord[1], curr_heading);
-  
 }
 
 function draw_plane(x, y, heading) {
@@ -72,7 +72,7 @@ function draw_plane(x, y, heading) {
   pop();
 }
 
-function get_pixels_from_geo_coordinates(lat, lon) {
+function get_pixels_from_geo_coordinates(lat, lon, ref_a, ref_b) {
   x = map(lat, ref_a[2], ref_b[2], ref_a[0], ref_b[0]);
   y = map(lon, ref_a[3], ref_b[3], ref_a[1], ref_b[1]);
   return [x, y];
