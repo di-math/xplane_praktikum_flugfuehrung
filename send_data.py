@@ -3,7 +3,7 @@ import json
 import asyncio
 import websockets
 
-PORT = 3000
+PORT = 8080
 clients = set()
 
 
@@ -24,12 +24,12 @@ async def send_pos():
             if clients:
                 pos = fc.xpc.getPOSI()
                 height = fc.get_altitude_ft_pilot()
-                await asyncio.gather(*[client.send(json.dumps({"lat": pos[1], "lon": pos[0], "heading": pos[5], "height": height})) for client in clients])
+                await asyncio.gather(*[client.send(json.dumps({"lat": pos[0], "lon": pos[1], "heading": pos[5], "aoa": pos[3], "height": pos[2]})) for client in clients])
             await asyncio.sleep(1)
 
 
 async def main():
-    async with websockets.serve(connection_callback, "localhost", 3000):
+    async with websockets.serve(connection_callback, "localhost", PORT):
         await asyncio.gather(send_pos())
 
 

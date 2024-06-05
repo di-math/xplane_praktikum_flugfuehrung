@@ -1,5 +1,4 @@
 // ref_a has to always be NW to ref_b
-// ref_a = [x, y, lat, lon]
 const ref_a = [0, 0, 11.333333, 48.866667];
 const ref_b = [685, 684, 11.733333, 48.6];
 
@@ -45,7 +44,7 @@ function draw() {
   image(map_background, 0, 0);
 
   // Calculate current position in pixels
-  coord = get_pixels_from_geo_coordinates(curr_lat, curr_lon, ref_a, ref_b);
+  coord = get_pixels_from_geo_coordinates(curr_lat, curr_lon);
 
   // Draw path
   stroke(255, 0, 0);
@@ -72,8 +71,8 @@ function draw_plane(x, y, heading) {
   pop();
 }
 
-function get_pixels_from_geo_coordinates(lat, lon, ref_a, ref_b) {
-  x = map(lat, ref_a[2], ref_b[2], ref_a[0], ref_b[0]);
-  y = map(lon, ref_a[3], ref_b[3], ref_a[1], ref_b[1]);
+function get_pixels_from_geo_coordinates(lat, lon) {
+  x = map(lon, ref_a[2], ref_b[2], ref_a[0], ref_b[0]);
+  y = map(lat, ref_a[3], ref_b[3], ref_a[1], ref_b[1]);
   return [x, y];
 }
