@@ -23,8 +23,9 @@ async def send_pos():
         while True:
             if clients:
                 pos = fc.xpc.getPOSI()
-                height = fc.get_altitude_ft_pilot()
-                await asyncio.gather(*[client.send(json.dumps({"lat": pos[0], "lon": pos[1], "heading": pos[5], "aoa": pos[3], "height": pos[2]})) for client in clients])
+                tailnumber = fc.get_tailnumber()
+                transponder_code = fc.get_transponder_code()
+                await asyncio.gather(*[client.send(json.dumps({"lat": pos[0], "lon": pos[1], "heading": pos[5], "aoa": pos[3], "height": pos[2], "transponder_code": transponder_code, "tailnumber": tailnumber})) for client in clients])
             await asyncio.sleep(1)
 
 

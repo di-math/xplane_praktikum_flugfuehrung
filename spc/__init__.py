@@ -84,6 +84,19 @@ class FlightController:
     def get_altitude_ft_pilot(self) -> float:
         return self.xpc.getDREF("sim/cockpit2/gauges/indicators/altitude_ft_pilot")[0]
 
+    def get_tailnumber(self) -> str:
+        integer_casted = [int(value) for value in self.xpc.getDREF(
+            "sim/aircraft/view/acf_tailnum")]
+        tailnumber = ""
+        for elem in integer_casted:
+            if elem == 0:
+                continue
+            tailnumber = tailnumber + chr(elem)
+        return tailnumber
+
+    def get_transponder_code(self) -> int:
+        return self.xpc.getDREF("sim/cockpit/radios/transponder_code")[0]
+
     def set_aileron_trim(self, value: float) -> None:
         self.xpc.sendDREF("sim/flightmodel/controls/elv_trim", value)
 

@@ -64,7 +64,7 @@ function draw() {
   coord = get_pixels_from_geo_coordinates(curr_lat, curr_lon, curr_height);
 
   // Draw path
-  stroke(3, 138, 21);
+  stroke(148, 255, 49);
   flight_path_history.push(coord);
   flight_path_history.forEach((elem) => {
     circle(elem[0], elem[1], 2);
@@ -91,7 +91,6 @@ function draw_plane(x, y, aoa) {
 function get_pixels_from_geo_coordinates(lat, lon, height) {
   let { x: x_ecef, y: y_ecef, z: z_ecef } = lat_lon_to_ecef(lat, lon, gs_ref_a_h_ft_geo);
   let ground_dist_pb = Math.sqrt((x_ecef - gs_ref_a_x_ecef) ** 2 + (y_ecef - gs_ref_a_y_ecef) ** 2);
-  console.log(x_ecef, y_ecef, z_ecef);
   x = map(ground_dist_pb, 0, ground_dist_ab, gs_ref_a_x_px, gs_ref_b_x_px);
   y = map(height, gs_ref_a_h_ft_geo, gs_ref_b_h_ft_geo, gs_ref_a_y_px, gs_ref_b_y_px);
   return [x, y];
