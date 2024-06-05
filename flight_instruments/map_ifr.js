@@ -45,6 +45,7 @@ let curr_tailnumber = "";
 let curr_transponder_code = 0;
 
 let flight_path_history = [];
+let flight_path_history_counter = 0;
 
 function setup() {
   // Check if ref_a is NW to ref_b
@@ -89,12 +90,16 @@ function draw() {
 
   // Draw path
   stroke(148, 255, 49);
-  flight_path_history.push(coord);
-
-  for (let i = 0; i < flight_path_history.length; i += 10) {
-    circle(flight_path_history[i][0], flight_path_history[i][1], 2);
+  if (flight_path_history_counter == 10) {
+    flight_path_history.push(coord);
+    flight_path_history_counter = 0;
+  } else {
+    flight_path_history_counter++;
   }
-  if (flight_path_history.length > 100) {
+  flight_path_history.forEach((elem) => {
+    circle(elem[0], elem[1], 2);
+  });
+  if (flight_path_history.length > 10) {
     flight_path_history.shift();
   }
 
