@@ -4,7 +4,7 @@ from time import sleep
 
 class FlightController:
 
-    def __init__(self, xpHost='localhost', xpPort=49009, port=0, timeout=200):
+    def __init__(self, xpHost='10.84.56.245', xpPort=49009, port=0, timeout=200):
         self.xpc = xpc.XPlaneConnect(xpHost, xpPort, port, timeout)
 
     # Define __enter__ and __exit__ to support the `with` construct.
