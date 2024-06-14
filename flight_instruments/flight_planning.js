@@ -6,7 +6,7 @@ let curr_lat = 0.0;
 let curr_lon = 0.0;
 let curr_heading = 0.0;
 
-const min_dist_ac_wp = 50;
+const min_dist_ac_wp = 100;
 
 let waypoint_list_window_width = 700;
 let waypoint_list_window_height = 700;
