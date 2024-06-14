@@ -63,7 +63,7 @@ function draw() {
   let total_dist = 0;
   for(let i = 0; i < waypoints.length; i++) {
     // check if waypoint reached
-    if(waypoint_reached(waypoints[i].lat, waypoints[i].lon)){
+    if(!waypoints[i].passed && waypoint_reached(waypoints[i].lat, waypoints[i].lon)){
       waypoints[i].passed = true;
       waypoints[i].passed_timestamp = Date.now();
     }
