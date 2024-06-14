@@ -115,7 +115,7 @@ function draw() {
   })
 
   // Calculate current position in pixels
-  coord = get_pixels_from_geo_coordinates(curr_lat, curr_lon);
+  let coord = get_pixels_from_geo_coordinates(curr_lat, curr_lon);
 
   // Draw path
   stroke(255, 0, 0);
@@ -196,10 +196,10 @@ function lat_lon_to_ecef(lat, lon, h) {
 
 function heaversine_dist(lat1, lon1, lat2, lon2){
   const R = 6371e3;
-  const phi1 = lat1 * Math.PI/180; 
-  const phi2 = lat2 * Math.PI/180;
-  const deltaPhi = (lat2-lat1) * Math.PI/180;
-  const deltaLambda = (lon2-lon1) * Math.PI/180;
+  const phi1 = lat1 * (Math.PI/180); 
+  const phi2 = lat2 * (Math.PI/180);
+  const deltaPhi = (lat2-lat1) * (Math.PI/180);
+  const deltaLambda = (lon2-lon1) * (Math.PI/180);
 
   const a = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) +
             Math.cos(phi1) * Math.cos(phi2) *
@@ -225,10 +225,10 @@ function calculate_rwk(lat1, lon1, lat2, lon2){
     rwk = 90.0;
   }  
   else if(((lon1-lon2) < 0.0) ) {
-    rwk = degrees(Math.PI/2.0 - atan( ((lat1-lat2)*60.0*1852.0) / ((lon1-lon2)*cos(radians(lat1))*60.0*1852.0) ) );
+    rwk = (Math.PI/2.0 - Math.atan( ((lat1-lat2)*60.0*1852.0) / ((lon1-lon2)*cos((lat1* (Math.PI/180)))*60.0*1852.0) ) ) * (180/Math.PI);
   }
   else if (((lon1-lon2) > 0.0) ) {
-    rwk = degrees(3.0/2.0*Math.PI- atan(((lat1-lat2)*60.0*1852.0) / ((lon1-lon2)*cos(radians(lat1))*60.0*1852.0) ) );
+    rwk = (3.0/2.0*Math.PI- Math.atan(((lat1-lat2)*60.0*1852.0) / ((lon1-lon2)*cos((lat1 * (Math.PI/180)))*60.0*1852.0) ) ) * (180/Math.PI);
   }
   return rwk;
 }
