@@ -61,20 +61,20 @@ function draw() {
   let entry_count = 1;
   let total_flight_time = 0;
   let total_dist = 0;
-  waypoints.forEach((elem, index) => {
+  for(let i = 0; i < waypoints.length; i++) {
     // check if waypoint reached
-    if(waypoint_reached(elem.lat, elem.lon)){
-      elem.passed = true;
-      elem.passed_timestamp = Date.now();
+    if(waypoint_reached(waypoints[i].lat, waypoints[i].lon)){
+      waypoints[i].passed = true;
+      waypoints[i].passed_timestamp = Date.now();
     }
     // Draw waypoint on map
-    draw_waypoint(elem.lat, elem.lon, elem.passed)
+    draw_waypoint(waypoints[i].lat, waypoints[i].lon, waypoints[i].passed)
     // Draw leg to next waypoint
-    if (index + 1 < waypoints.length) {
-      let coord_a = get_pixels_from_geo_coordinates(elem.lat, elem.lon);
-      let coord_b = get_pixels_from_geo_coordinates(waypoints[index + 1].lat, waypoints[index + 1].lon);
+    if (i + 1 < waypoints.length) {
+      let coord_a = get_pixels_from_geo_coordinates(waypoints[i].lat, waypoints[i].lon);
+      let coord_b = get_pixels_from_geo_coordinates(waypoints[i + 1].lat, waypoints[i + 1].lon);
       push();
-      if(elem.passed && waypoints[index + 1].passed) {
+      if(waypoints[i].passed && waypoints[i + 1].passed) {
         stroke(180);
       } else {
         stroke(252, 131, 56);
@@ -87,24 +87,24 @@ function draw() {
     let padding_left = 20;
     let padding_top = 40;
     textSize(12);
-    if(elem.passed) {
+    if(waypoints[i].passed) {
       fill(180)
     } else {
       fill('yellow');
     }
-    text(`Waypoint ${index+1} - lat: ${elem.lat.toFixed(5)} - lon: ${elem.lon.toFixed(5)}`, map_background.width + padding_left, padding_top * (entry_count));
+    text(`Waypoint ${i+1} - lat: ${waypoints[i].lat.toFixed(5)} - lon: ${waypoints[i].lon.toFixed(5)}`, map_background.width + padding_left, padding_top * (entry_count));
     entry_count++;
     // Make entry for leg 
-    if (index + 1 < waypoints.length) {
-      let dist = heaversine_dist(elem.lat, elem.lon, waypoints[index + 1].lat, waypoints[index + 1].lon);
-      let rwk = calculate_rwk(elem.lat, elem.lon, waypoints[index + 1].lat, waypoints[index + 1].lon);
+    if (i + 1 < waypoints.length) {
+      let dist = heaversine_dist(waypoints[i].lat, waypoints[i].lon, waypoints[i + 1].lat, waypoints[i + 1].lon);
+      let rwk = calculate_rwk(waypoints[i].lat, waypoints[i].lon, waypoints[i + 1].lat, waypoints[i + 1].lon);
       let headwind = calculate_headwind(rwk);
       let leg_time = dist / speed + headwind;
       total_dist = total_dist + dist;
       total_flight_time = total_flight_time + leg_time;
-      if(elem.passed && waypoints[index + 1].passed) {
+      if(waypoints[i].passed && waypoints[index + 1].passed) {
         fill(180);
-        let acutal_leg_time = (waypoints[index + 1].passed_timestamp - elem.passed_timestamp) / 1000;
+        let acutal_leg_time = (waypoints[index + 1].passed_timestamp - waypoints[i].passed_timestamp) / 1000;
         text(`     rwk: ${Math.round(rwk)}° \t|\t dist: ${Math.round(dist)}m \t|\t ete: ${Math.round(leg_time)}s \t|\t total dist: ${Math.round(total_dist)}m \t|\t total flight time: ${Math.round(total_flight_time)}s \t|\t actual: ${Math.round(acutal_leg_time)}s`, map_background.width + padding_left, padding_top * (entry_count));
       } else {
         fill('yellow');
@@ -112,7 +112,7 @@ function draw() {
       }
       entry_count++;
     }
-  })
+  }
 
   // Calculate current position in pixels
   let coord = get_pixels_from_geo_coordinates(curr_lat, curr_lon);
