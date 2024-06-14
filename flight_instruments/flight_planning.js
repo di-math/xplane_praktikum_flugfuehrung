@@ -105,10 +105,10 @@ function draw() {
       if(elem.passed && waypoints[index + 1].passed) {
         fill(180);
         let acutal_leg_time = (waypoints[index + 1].passed_timestamp - elem.passed_timestamp) / 1000;
-        text(`     rwk: ${Math.round(rwk)}° \t|\t dist: ${Math.round(dist)}m \t|\t ete: ${Math.round(leg_time)}s \t|\t total dist: ${Math.round(total_flight_time)}m \t|\t total flight time: ${Math.round(total_flight_time)}s \t|\t actual: ${Math.round(acutal_leg_time)}s`, map_background.width + padding_left, padding_top * (entry_count));
+        text(`     rwk: ${Math.round(rwk)}° \t|\t dist: ${Math.round(dist)}m \t|\t ete: ${Math.round(leg_time)}s \t|\t total dist: ${Math.round(total_dist)}m \t|\t total flight time: ${Math.round(total_flight_time)}s \t|\t actual: ${Math.round(acutal_leg_time)}s`, map_background.width + padding_left, padding_top * (entry_count));
       } else {
         fill('yellow');
-        text(`     rwk: ${Math.round(rwk)}° \t|\t dist: ${Math.round(dist)}m \t|\t ete: ${Math.round(leg_time)}s \t|\t total dist: ${Math.round(total_flight_time)}m \t|\t total flight time: ${Math.round(total_flight_time)}s`, map_background.width + padding_left, padding_top * (entry_count));
+        text(`     rwk: ${Math.round(rwk)}° \t|\t dist: ${Math.round(dist)}m \t|\t ete: ${Math.round(leg_time)}s \t|\t total dist: ${Math.round(total_dist)}m \t|\t total flight time: ${Math.round(total_flight_time)}s`, map_background.width + padding_left, padding_top * (entry_count));
       }
       entry_count++;
     }
@@ -225,10 +225,10 @@ function calculate_rwk(lat1, lon1, lat2, lon2){
     rwk = 90.0;
   }  
   else if(((lon1-lon2) < 0.0) ) {
-    rwk = degrees(PI/2.0 - atan( ((lat1-lat2)*60.0*1852.0) / ((lon1-lon2)*cos(radians(lat1))*60.0*1852.0) ) );
+    rwk = degrees(Math.PI/2.0 - atan( ((lat1-lat2)*60.0*1852.0) / ((lon1-lon2)*cos(radians(lat1))*60.0*1852.0) ) );
   }
   else if (((lon1-lon2) > 0.0) ) {
-    rwk = degrees(3.0/2.0*PI- atan(((lat1-lat2)*60.0*1852.0) / ((lon1-lon2)*cos(radians(lat1))*60.0*1852.0) ) );
+    rwk = degrees(3.0/2.0*Math.PI- atan(((lat1-lat2)*60.0*1852.0) / ((lon1-lon2)*cos(radians(lat1))*60.0*1852.0) ) );
   }
   return rwk;
 }
