@@ -102,9 +102,9 @@ function draw() {
       let leg_time = dist / speed + headwind;
       total_dist = total_dist + dist;
       total_flight_time = total_flight_time + leg_time;
-      if(waypoints[i].passed && waypoints[index + 1].passed) {
+      if(waypoints[i].passed && waypoints[i + 1].passed) {
         fill(180);
-        let acutal_leg_time = (waypoints[index + 1].passed_timestamp - waypoints[i].passed_timestamp) / 1000;
+        let acutal_leg_time = (waypoints[i + 1].passed_timestamp - waypoints[i].passed_timestamp) / 1000;
         text(`     rwk: ${Math.round(rwk)}° \t|\t dist: ${Math.round(dist)}m \t|\t ete: ${Math.round(leg_time)}s \t|\t total dist: ${Math.round(total_dist)}m \t|\t total flight time: ${Math.round(total_flight_time)}s \t|\t actual: ${Math.round(acutal_leg_time)}s`, map_background.width + padding_left, padding_top * (entry_count));
       } else {
         fill('yellow');
