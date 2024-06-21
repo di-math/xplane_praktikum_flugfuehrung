@@ -14,8 +14,11 @@ let waypoint_list_window_height = 700;
 const wind = {direction: 0, speed: 5.14};
 const speed = 27.7778; // m/s
 
+let heading_ap_active = false;
+
 let flight_path_history = [];
 let waypoints = [];
+let socket;
 
 function preload() {
   // Load map as background (0, 0, 11.333333, 48.866667), (685, 684, 11.733333, 48.6)
@@ -38,7 +41,7 @@ function setup() {
   frameRate(2);
 
   // Setup websocket
-  const socket = new WebSocket("ws://localhost:8080");
+  socket = new WebSocket("ws://localhost:8080");
   // Listen for messages
   socket.onmessage = (message) => {
     pos_obj = JSON.parse(message.data);
@@ -49,6 +52,7 @@ function setup() {
 }
 
 function draw() {
+
   // Draw the map as background
   image(map_background, 0, 0);
 
@@ -114,6 +118,18 @@ function draw() {
     }
   }
 
+  // Set heading for next WP
+  if(heading_ap_active) {
+    for(let i = 0; i < waypoints.length; i++) {
+      if (!waypoints[i].passed) {
+        // calculate course between current position and waypoint
+        let rwk = calculate_rwk(curr_lat, curr_lon, waypoints[i].lat, waypoints[i].lon);
+        socket.send(JSON.stringify({command: "set_heading", heading: rwk}));
+        break;
+      }
+    }
+  }
+
   // Calculate current position in pixels
   let coord = get_pixels_from_geo_coordinates(curr_lat, curr_lon);
 
@@ -130,6 +146,9 @@ function draw() {
   // Draw plane on map
   if(coord[0] <= map_background.width && coord[1] <= map_background.height){draw_plane(coord[0], coord[1], curr_heading)}
 
+  // Draw AP Button
+  draw_ap_button();
+
 }
 
 function mouseClicked(){
@@ -137,6 +156,31 @@ function mouseClicked(){
     let coord = get_geo_coordinates_from_pixel(mouseX, mouseY);
     waypoints.push({lon: coord[0], lat: coord[1], passed: false, passed_timestamp: null});
   }
+  if(mouseX >= 1225 && mouseX <= 1225+150 && mouseY >= 10 && mouseY <= 10+50) {
+    heading_ap_active = !heading_ap_active;
+    socket.send(JSON.stringify({command: "set_ap", active: heading_ap_active}));
+  }
+}
+
+function draw_ap_button(){
+  let pos_x = 1225;
+  let pos_y = 10;
+  push()
+  fill(180)
+  noStroke()
+  rect(pos_x, pos_y, 150, 50)
+  textSize(25)
+  fill(0)
+  if(heading_ap_active){
+    text("AP active", pos_x + 10, pos_y + 32)
+    fill(8, 194, 57)
+    circle(pos_x + 130, pos_y + 25, 15)
+  }
+  else {
+    text("AP off", pos_x + 10, pos_y + 32)
+  }
+  pop()
+
 }
 
 function draw_plane(x, y, heading) {
